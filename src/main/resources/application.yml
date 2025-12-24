@@ -1,11 +1,14 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/cursa4
-    username: eoeqs
-    password: eoeqs
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/cursa4}
+    username: ${SPRING_DATASOURCE_USERNAME:eoeqs}
+    password: ${SPRING_DATASOURCE_PASSWORD:eoeqs}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 50
+      connection-timeout: 30000
+      initialization-fail-timeout: -1
+      connection-test-query: SELECT 1
   jpa:
     generate-ddl: true
     show-sql: false
@@ -19,6 +22,8 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
     validate-on-migrate: false
+    connect-retries: 10
+    connect-retries-interval: 5
 
   jwt:
     secret-key:
@@ -34,10 +39,10 @@ spring:
       mail.smtp.starttls.enable: true
       mail.smtp.ssl.trust: smtp.yandex.ru
 minio:
-  url: http://localhost:9000
+  url: ${MINIO_URL:http://localhost:9000}
   access:
-    name: new-access-key
-    secret: new-secret-key
+    name: ${MINIO_ACCESS_NAME:fergoeqs}
+    secret: ${MINIO_ACCESS_SECRET:fergoeqs123456789}
     bucket:
       name: vetcare
 
