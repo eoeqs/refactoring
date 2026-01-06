@@ -1,5 +1,6 @@
 package org.fergoeqs.coursework.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.fergoeqs.coursework.dto.SymptomDTO;
 import org.fergoeqs.coursework.services.SymptomsService;
 import org.fergoeqs.coursework.utils.Mappers.SymptomMapper;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Symptoms", description = "API для управления симптомами")
 @RestController
 @RequestMapping("/api/symptoms")
 public class SymptomsController {

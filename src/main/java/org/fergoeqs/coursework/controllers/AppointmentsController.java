@@ -1,5 +1,7 @@
 package org.fergoeqs.coursework.controllers;
 
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.coyote.BadRequestException;
 import org.fergoeqs.coursework.dto.AppointmentDTO;
 import org.fergoeqs.coursework.models.Appointment;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Appointments", description = "API для управления записями на прием")
 @RestController
 @RequestMapping("/api/appointments")
 public class AppointmentsController {

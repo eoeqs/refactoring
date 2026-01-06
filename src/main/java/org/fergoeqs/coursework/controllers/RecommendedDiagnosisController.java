@@ -10,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
+@Tag(name = "Recommended Diagnosis", description = "API для управления рекомендуемыми диагнозами")
 @RestController
 @RequestMapping("/api/recommended-diagnosis")
 public class RecommendedDiagnosisController {

@@ -1,5 +1,6 @@
 package org.fergoeqs.coursework.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.fergoeqs.coursework.dto.HealthUpdateDTO;
 import org.fergoeqs.coursework.services.HealthUpdatesService;
 import org.fergoeqs.coursework.utils.Mappers.HealthUpdateMapper;
@@ -8,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Health Updates", description = "API для управления обновлениями состояния здоровья")
 @RestController
 @RequestMapping("/api/health")
 public class HealthUpdateController {

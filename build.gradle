@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '3.4.2'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'org.flywaydb.flyway' version '10.20.1'
+    id 'org.openapi.generator' version '7.2.0'
 }
 
 group = 'org.fergoeqs'
@@ -39,6 +40,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.apache.pdfbox:pdfbox:2.0.27'
     implementation 'io.minio:minio:8.5.17'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-database-postgresql'
 
@@ -61,4 +63,24 @@ flyway {
     password = 'eoeqs'
     locations = ['filesystem:src/main/resources/db/migration']
     baselineOnMigrate = true
+}
+
+openApiGenerate {
+    generatorName = "typescript-axios"
+    inputSpec = "${projectDir}/src/main/resources/openapi.yaml"
+    outputDir = "${buildDir}/generated/openapi-client"
+    apiPackage = "org.fergoeqs.coursework.client.api"
+    modelPackage = "org.fergoeqs.coursework.client.model"
+    configOptions = [
+        npmName: "vetcare-api-client",
+        npmVersion: "1.0.0"
+    ]
+}
+
+task generateOpenApiSpec(type: Exec) {
+    description = 'Generate OpenAPI specification from Spring Boot application'
+    commandLine = ['curl', '-o', "${projectDir}/src/main/resources/openapi.yaml", 'http://localhost:8080/v3/api-docs.yaml']
+    doFirst {
+        println "Make sure the application is running on http://localhost:8080"
+    }
 }

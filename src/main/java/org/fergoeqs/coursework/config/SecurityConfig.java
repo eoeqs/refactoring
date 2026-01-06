@@ -36,7 +36,6 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    // Allow both localhost (for development) and frontend container (for Docker)
                     config.setAllowedOrigins(List.of(
                             "http://localhost:8081",
                             "http://frontend:80",
@@ -54,6 +53,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/register", "/api/users/login").permitAll()
                         .requestMatchers("/api/rating-and-reviews/**").permitAll()
                         .requestMatchers("/api/sectors/**").hasAnyRole("ADMIN", "VET")
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/v3/api-docs.yaml", "/v3/api-docs.json").permitAll()
+                        .requestMatchers("/swagger-resources/**", "/webjars/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

@@ -1,5 +1,6 @@
 package org.fergoeqs.coursework.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.fergoeqs.coursework.dto.ClinicDTO;
 import org.fergoeqs.coursework.services.ClinicsService;
 import org.fergoeqs.coursework.utils.Mappers.ClinicMapper;
@@ -10,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Clinics", description = "API для управления клиниками")
 @Service
 @RestController
 @RequestMapping("/api/clinics")

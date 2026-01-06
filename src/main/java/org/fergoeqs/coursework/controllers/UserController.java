@@ -1,5 +1,13 @@
 package org.fergoeqs.coursework.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.ValidationException;
 import org.apache.coyote.BadRequestException;
 import org.fergoeqs.coursework.dto.*;
@@ -20,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
+@Tag(name = "Users", description = "API для управления пользователями")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -38,6 +47,13 @@ public class UserController {
         this.appUserMapper = appUserMapper;
     }
 
+    @Operation(summary = "Получить всех владельцев", description = "Возвращает список всех пользователей с ролью OWNER")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Список владельцев успешно получен",
+                    content = @Content(schema = @Schema(implementation = AppUserDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/all-owners")
     public ResponseEntity<?> getAllOwners() {
         try {
@@ -48,6 +64,13 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Получить всех ветеринаров", description = "Возвращает список всех пользователей с ролью VET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Список ветеринаров успешно получен",
+                    content = @Content(schema = @Schema(implementation = AppUserDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/all-vets")
     public ResponseEntity<?> getAllVets() {
         try {
@@ -58,6 +81,13 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Регистрация нового пользователя", description = "Создает нового пользователя и возвращает JWT токен")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Пользователь успешно зарегистрирован",
+                    content = @Content(schema = @Schema(implementation = AuthenticationSucceedDto.class))),
+            @ApiResponse(responseCode = "400", description = "Некорректные данные"),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
     @PostMapping("/register")
     public ResponseEntity<?> createUser(@RequestBody RegisterUserDTO user) {
 
@@ -83,6 +113,13 @@ public class UserController {
     }
 
 
+    @Operation(summary = "Аутентификация пользователя", description = "Аутентифицирует пользователя и возвращает JWT токен")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Аутентификация успешна",
+                    content = @Content(schema = @Schema(implementation = AuthenticationSucceedDto.class))),
+            @ApiResponse(responseCode = "401", description = "Неверные учетные данные"),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
     @PostMapping("/login")
     public ResponseEntity<AuthenticationSucceedDto> authenticate(@RequestBody LoginUserDTO loginUserDto) {
         try {
@@ -96,8 +133,16 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Обновить аватар пользователя", description = "Загружает новый аватар для текущего пользователя")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Аватар успешно обновлен"),
+            @ApiResponse(responseCode = "401", description = "Не авторизован"),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
+    @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping("/update-avatar")
-    public ResponseEntity<?> updateUserAvatar(@RequestParam("avatar") MultipartFile avatar) {
+    public ResponseEntity<?> updateUserAvatar(
+            @Parameter(description = "Файл изображения аватара") @RequestParam("avatar") MultipartFile avatar) {
         try {
             AppUser user = userService.getAuthenticatedUser();
             userService.updateUserAvatar(user, avatar);
@@ -108,6 +153,14 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Обновить информацию о пользователе", description = "Обновляет данные текущего пользователя")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Пользователь успешно обновлен",
+                    content = @Content(schema = @Schema(implementation = AppUserDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Не авторизован"),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
+    @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping("/update-user/")
     public ResponseEntity<?> updateUser(@RequestBody AppUserDTO userDTO) {
         try {
@@ -119,9 +172,19 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Обновить пользователя (админ)", description = "Обновляет данные пользователя (только для администраторов)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Пользователь успешно обновлен",
+                    content = @Content(schema = @Schema(implementation = AppUserDTO.class))),
+            @ApiResponse(responseCode = "403", description = "Доступ запрещен"),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update-user-admin/{id}")
-    public ResponseEntity<?> updateUserForAdmin(@PathVariable Long id, @RequestBody AppUserDTO userDTO) {
+    public ResponseEntity<?> updateUserForAdmin(
+            @Parameter(description = "ID пользователя") @PathVariable Long id,
+            @RequestBody AppUserDTO userDTO) {
         try {
             AppUser updatedUser = userService.updateUserForAdmin(id, userDTO);
             return ResponseEntity.ok(appUserMapper.toDTO(updatedUser));
@@ -131,9 +194,19 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Обновить роли пользователя", description = "Обновляет роли пользователя (только для администраторов)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Роли успешно обновлены",
+                    content = @Content(schema = @Schema(implementation = AppUserDTO.class))),
+            @ApiResponse(responseCode = "403", description = "Доступ запрещен"),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update-roles/{id}")
-    public ResponseEntity<?> updateRoles(@PathVariable Long id, @RequestBody RoleType userDTO) {
+    public ResponseEntity<?> updateRoles(
+            @Parameter(description = "ID пользователя") @PathVariable Long id,
+            @RequestBody RoleType userDTO) {
         try {
             AppUser updatedUser = userService.updateUserRoles(id, userDTO);
             return ResponseEntity.ok(appUserMapper.toDTO(updatedUser));
@@ -143,16 +216,36 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Получить пользователя по ID", description = "Возвращает информацию о пользователе по его ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Пользователь найден",
+                    content = @Content(schema = @Schema(implementation = AppUser.class))),
+            @ApiResponse(responseCode = "404", description = "Пользователь не найден")
+    })
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/{id}")
-    public Optional<AppUser> getUserById(@PathVariable Long id) {
+    public Optional<AppUser> getUserById(@Parameter(description = "ID пользователя") @PathVariable Long id) {
         return userService.findById(id);
     }
 
+    @Operation(summary = "Удалить пользователя", description = "Удаляет пользователя по ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Пользователь успешно удален"),
+            @ApiResponse(responseCode = "404", description = "Пользователь не найден")
+    })
+    @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
+    public void deleteUser(@Parameter(description = "ID пользователя") @PathVariable Long id) {
         userService.deleteUser(id);
     }
 
+    @Operation(summary = "Получить всех пользователей", description = "Возвращает список всех пользователей системы")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Список пользователей успешно получен",
+                    content = @Content(schema = @Schema(implementation = AppUserDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Не авторизован")
+    })
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/get-users")
     public ResponseEntity<?> getAllUsers() throws BadRequestException {
         AppUser user = userService.getAuthenticatedUser();
@@ -161,6 +254,13 @@ public class UserController {
         return ResponseEntity.ok(userService.findAllUsers());
     }
 
+    @Operation(summary = "Получить информацию о текущем пользователе", description = "Возвращает ID и роль текущего аутентифицированного пользователя")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Информация успешно получена",
+                    content = @Content(schema = @Schema(implementation = UserInfoDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Не авторизован")
+    })
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/current-user-info")
     public ResponseEntity<UserInfoDTO> getCurrentUserInfo() throws BadRequestException {
         AppUser user = userService.getAuthenticatedUser();
@@ -175,8 +275,16 @@ public class UserController {
         return ResponseEntity.ok(userInfo);
     }
 
+    @Operation(summary = "Получить DTO пользователя по ID", description = "Возвращает DTO пользователя по его ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Пользователь найден",
+                    content = @Content(schema = @Schema(implementation = AppUserDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Пользователь не найден"),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/user-info/{id}")
-    public ResponseEntity<?> getUserDtoById(@PathVariable Long id) throws BadRequestException {
+    public ResponseEntity<?> getUserDtoById(@Parameter(description = "ID пользователя") @PathVariable Long id) throws BadRequestException {
         try {
             AppUser user = userService.findById(id).orElseThrow(() -> new BadRequestException("User not found"));
             return ResponseEntity.ok(appUserMapper.toDTO(user));
