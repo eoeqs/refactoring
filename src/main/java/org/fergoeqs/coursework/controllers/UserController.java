@@ -17,6 +17,7 @@ import org.fergoeqs.coursework.jwt.JwtService;
 import org.fergoeqs.coursework.models.AppUser;
 import org.fergoeqs.coursework.models.enums.RoleType;
 import org.fergoeqs.coursework.services.AuthenticationService;
+import org.fergoeqs.coursework.services.AvatarService;
 import org.fergoeqs.coursework.services.UserService;
 import org.fergoeqs.coursework.utils.Mappers.AppUserMapper;
 import org.springframework.http.HttpStatus;
@@ -36,13 +37,15 @@ public class UserController {
     private final JwtService jwtService;
     private final AuthenticationService authenticationService;
     private final AppUserMapper appUserMapper;
+    private final AvatarService avatarService;
 
     public UserController(UserService userService, JwtService jwtService, AuthenticationService authenticationService,
-                          AppUserMapper appUserMapper) {
+                          AppUserMapper appUserMapper, AvatarService avatarService) {
         this.userService = userService;
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
         this.appUserMapper = appUserMapper;
+        this.avatarService = avatarService;
     }
 
     @Operation(summary = "Получить всех владельцев", description = "Возвращает список всех пользователей с ролью OWNER")
@@ -108,7 +111,7 @@ public class UserController {
     public void updateUserAvatar(
             @Parameter(description = "Файл изображения аватара") @RequestParam("avatar") MultipartFile avatar) throws IOException, BadRequestException {
         AppUser user = userService.getAuthenticatedUser();
-        userService.updateUserAvatar(user, avatar);
+        avatarService.updateUserAvatar(user, avatar);
     }
 
     @Operation(summary = "Обновить информацию о пользователе", description = "Обновляет данные текущего пользователя")
