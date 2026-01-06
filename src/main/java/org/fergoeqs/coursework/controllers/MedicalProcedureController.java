@@ -1,5 +1,6 @@
 package org.fergoeqs.coursework.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.fergoeqs.coursework.dto.MedicalProcedureDTO;
 import org.fergoeqs.coursework.services.MedicalProcedureService;
 import org.fergoeqs.coursework.utils.Mappers.MedicalProcedureMapper;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+@Tag(name = "Medical Procedures", description = "API для управления медицинскими процедурами")
 @RestController
 @RequestMapping("/api/procedures")
 public class MedicalProcedureController {

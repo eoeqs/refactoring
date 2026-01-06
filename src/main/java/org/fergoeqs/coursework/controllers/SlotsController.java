@@ -1,5 +1,6 @@
 package org.fergoeqs.coursework.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.fergoeqs.coursework.dto.SlotDTO;
 import org.fergoeqs.coursework.models.Slot;
 import org.fergoeqs.coursework.services.SlotsService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Slots", description = "API для управления слотами времени")
 @RestController
 @RequestMapping("/api/slots")
 public class SlotsController {

@@ -1,0 +1,386 @@
+{
+	"info": {
+		"_postman_id": "vetcare-api-collection",
+		"name": "VetCare API",
+		"description": "Postman коллекция для тестирования VetCare API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\",\n    \"phoneNumber\": \"+7 (999) 123-45-67\",\n    \"name\": \"Test\",\n    \"surname\": \"User\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "register"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"token\", jsonData.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "login"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User Info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/current-user-info",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "current-user-info"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pets",
+			"item": [
+				{
+					"name": "Get All Pets",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/pets/all-pets",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "pets", "all-pets"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Pet by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/pets/pet/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "pets", "pet", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Pet",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Барсик\",\n    \"breed\": \"Персидская\",\n    \"type\": \"CAT\",\n    \"weight\": 4.5,\n    \"sex\": \"MALE\",\n    \"age\": 3\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/pets/new-pet",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "pets", "new-pet"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Pets",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/pets/user-pets",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "pets", "user-pets"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Appointments",
+			"item": [
+				{
+					"name": "Get All Appointments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/appointments/all",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "appointments", "all"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Appointment by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/appointments/appointment/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "appointments", "appointment", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Anamnesis",
+			"item": [
+				{
+					"name": "Get Anamnesis by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/anamnesis/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "anamnesis", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Anamneses by Pet",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/anamnesis/all-by-patient/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "anamnesis", "all-by-patient", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Anamnesis",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Плановый осмотр\",\n    \"description\": \"Общее состояние удовлетворительное\",\n    \"date\": \"2024-01-15\",\n    \"pet\": 1,\n    \"appointment\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/anamnesis/save",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "anamnesis", "save"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Health Updates",
+			"item": [
+				{
+					"name": "Get All Health Updates by Pet",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/health/all/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "health", "all", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Health Update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"date\": \"2024-01-15T10:30:00\",\n    \"symptoms\": \"Кашель, насморк\",\n    \"notes\": \"Состояние улучшается\",\n    \"dynamics\": true,\n    \"pet\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/health/save",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "health", "save"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Veterinarians",
+			"item": [
+				{
+					"name": "Get All Vets",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/all-vets",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "all-vets"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Owners",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/all-owners",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "all-owners"]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

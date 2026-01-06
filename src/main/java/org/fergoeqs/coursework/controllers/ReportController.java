@@ -7,9 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+@Tag(name = "Reports", description = "API для управления медицинскими отчетами")
 @RestController
 @RequestMapping("/api/reports")
 public class ReportController {

@@ -1,5 +1,6 @@
 package org.fergoeqs.coursework.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.fergoeqs.coursework.dto.TreatmentDTO;
 import org.fergoeqs.coursework.models.Treatment;
 import org.fergoeqs.coursework.services.TreatmentService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Treatments", description = "API для управления лечением")
 @RestController
 @RequestMapping("/api/treatments")
 public class TreatmentController {
